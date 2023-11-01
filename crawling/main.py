@@ -25,26 +25,39 @@ def find_last_page_number(driver):
 
 
 def collect_data_and_write_to_csv(driver, writer):
-    # 상품명 추출
-    products = driver.find_elements(By.CSS_SELECTOR, "a.bo b")
-    product_names = [product.text for product in products]
+    product_containers = driver.find_elements(By.CSS_SELECTOR, "form#Myform td[valign='top'][width='25%']")
 
-    # 가격 추출
-    price_elements = driver.find_elements(By.CSS_SELECTOR, "td[valign='top'] span.p1_n")
-    prices = [int(re.sub(r'[^\d]', '', element.text.split('(')[0].strip())) for element in price_elements]
+    for container in product_containers:
+        try:
+            # 이미지 URL 추출
+            image_element = container.find_element(By.CSS_SELECTOR, "img")
+            image_url = image_element.get_attribute('src')
+        except NoSuchElementException:
+            image_url = "이미지 없음"  # 이미지가 없는 경우
 
-    # 상품명과 가격을 튜플로 묶기
-    items = list(zip(product_names, prices))
+        try:
+            # 상품명과 링크 추출
+            product_element = container.find_element(By.CSS_SELECTOR, "a.bo b")
+            product_name = product_element.text
+            product_link = container.find_element(By.CSS_SELECTOR, "a.bo").get_attribute('href')
+        except NoSuchElementException:
+            continue  # 상품명과 링크가 없는 경우 해당 상품은 건너뜁니다.
 
-    # CSV 파일에 데이터 작성
-    for item in items:
-        writer.writerow(item)
+        # 가격 추출
+        try:
+            price_element = container.find_element(By.CSS_SELECTOR, "span.p1_n")
+            price = int(re.sub(r'[^\d]', '', price_element.text.split('(')[0].strip()))
+        except NoSuchElementException:
+            price = "가격 정보 없음"  # 가격 정보가 없는 경우
+
+        # 데이터 작성
+        writer.writerow([product_name, product_link, image_url, price])
 
 
 # 웹드라이버 설정
 driver = webdriver.Chrome()
 
-# CSV 파일 설정
+# CSV 파일 초기설정
 csv_file = open('products_prices.csv', 'w', newline='', encoding='utf-8')
 csv_writer = csv.writer(csv_file)
 csv_writer.writerow(['상품이름', '가격'])  # 헤더 작성
@@ -55,14 +68,12 @@ try:
     driver.get(base_url)
     time.sleep(2)
 
-    # 현재 페이지 수집
-    collect_data_and_write_to_csv(driver, csv_writer)
-
     # 마지막 페이지 번호 찾기
     total_pages = find_last_page_number(driver)
-    print('total_pages', total_pages)
+    current_page = 1  # 첫 페이지로 시작
+
     # 페이지 순회 및 데이터 수집
-    current_page = 1
+    # 페이지 순회 및 데이터 수집
     while current_page <= total_pages:
         collect_data_and_write_to_csv(driver, csv_writer)
 
@@ -72,7 +83,6 @@ try:
             next_page_script = f"Page_Set('{current_page}')"
             driver.execute_script(next_page_script)
             time.sleep(2)  # 페이지 로딩 대기
-
 
 except Exception as e:
     print("Error:", e)
