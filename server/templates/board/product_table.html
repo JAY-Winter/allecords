@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제품 목록</title>
+</head>
+<body>
+    <table border="1">
+        <tr>
+            <th>이미지</th>
+            <th>이름</th>
+            <th>가격</th>
+        </tr>
+        {% for product in products %}
+        <tr>
+            <td><img src="{{ product.image_url }}" alt="{{ product.name }}" style="width:100px;height:100px;"></td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.price }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
