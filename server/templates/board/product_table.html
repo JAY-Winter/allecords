@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>제품 목록</title>
+    <script>
+        function goToUrl(url) {
+            window.location = url;
+        }
+    </script>
 </head>
 <body>
     <!-- 검색 폼 추가 -->
@@ -21,7 +26,7 @@
         </tr>
         {% if products %}
             {% for product in products %}
-                <tr>
+                <tr onclick="goToUrl('{{ product.url }}')" style="cursor:pointer;">
                     <td><img src="{{ product.image_url }}" alt="{{ product.name }}" style="width:100px;height:100px;"></td>
                     <td>{{ product.name }}</td>
                     <td>{{ product.price }}</td>
@@ -34,25 +39,26 @@
         {% endif %}
     </table>
 
-<div>
-    <span class="step-links">
-        {% with request.GET.q as query %}
-            {% if products.has_previous %}
-                <a href="?q={{ query }}&page=1">&laquo; 처음</a>
-                <a href="?q={{ query }}&page={{ products.previous_page_number }}">이전</a>
-            {% endif %}
+    <!-- 페이지네이션 링크 -->
+    <div>
+        <span class="step-links">
+            {% with request.GET.q as query %}
+                {% if products.has_previous %}
+                    <a href="?q={{ query }}&page=1">&laquo; 처음</a>
+                    <a href="?q={{ query }}&page={{ products.previous_page_number }}">이전</a>
+                {% endif %}
 
-            <span class="current">
-                페이지 {{ products.number }} / {{ products.paginator.num_pages }}
-            </span>
+                <span class="current">
+                    페이지 {{ products.number }} / {{ products.paginator.num_pages }}
+                </span>
 
-            {% if products.has_next %}
-                <a href="?q={{ query }}&page={{ products.next_page_number }}">다음</a>
-                <a href="?q={{ query }}&page={{ products.paginator.num_pages }}">끝 &raquo;</a>
-            {% endif %}
-        {% endwith %}
-    </span>
-</div>
+                {% if products.has_next %}
+                    <a href="?q={{ query }}&page={{ products.next_page_number }}">다음</a>
+                    <a href="?q={{ query }}&page={{ products.paginator.num_pages }}">끝 &raquo;</a>
+                {% endif %}
+            {% endwith %}
+        </span>
+    </div>
 
 </body>
 </html>
