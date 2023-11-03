@@ -19,7 +19,9 @@
         .card-img-top {
             height: 200px; /* 또는 원하는 높이 */
             object-fit: cover;
+            margin-top: 15px;
         }
+
 
 
     </style>
@@ -54,8 +56,9 @@
     <div class="row">
         {% if products %}
         {% for product in products %}
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4"> <!-- 여기서 각 컬럼을 3개의 그리드로 설정 -->
-            <div class="card h-100">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+            <!-- bg-light 클래스를 카드에 추가하여 배경색 적용 -->
+            <div class="card h-100 bg-light">
                 <!-- 이미지 -->
                 <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}"
                      style="object-fit: contain; max-height: 150px;">
