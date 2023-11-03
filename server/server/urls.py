@@ -22,5 +22,4 @@ from board.views import product_list
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('products/', product_list, name='product_list'),
-
 ]
