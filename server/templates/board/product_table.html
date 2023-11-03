@@ -27,14 +27,25 @@
             height: auto; /* 이미지의 비율을 유지 */
         }
     </style>
+    <!-- 부트스트랩 CSS 추가 -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
 </head>
 <body>
-    <!-- 검색 폼 추가 -->
-    <form method="GET" action="">
-        <input type="text" name="q" placeholder="제품 검색...">
-        <button type="submit">검색</button>
-    </form>
+    <!-- 검색 폼 부트스트랩 스타일로 꾸미기 -->
+    <div class="container my-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form method="GET" action="" class="input-group">
+                    <input type="text" name="q" placeholder="제품 검색..." class="form-control">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary">검색</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
     <!-- 제품 그리드 -->
     <div class="grid-container">
@@ -43,7 +54,7 @@
                 <div class="grid-item" onclick="goToUrl('{{ product.url }}')" style="cursor:pointer;">
                     <img src="{{ product.image_url }}" alt="{{ product.name }}">
                     <h3>{{ product.name }}</h3>
-                    <p>{{ product.price }}</p>
+                    <p>{{ product.price }}원</p>
                 </div>
             {% endfor %}
         {% else %}
@@ -51,26 +62,47 @@
         {% endif %}
     </div>
 
-    <!-- 페이지네이션 링크 -->
-    <div>
-        <span class="step-links">
-            {% with request.GET.q as query %}
-                {% if products.has_previous %}
-                    <a href="?q={{ query }}&page=1">&laquo; 처음</a>
-                    <a href="?q={{ query }}&page={{ products.previous_page_number }}">이전</a>
-                {% endif %}
+<!-- Bootstrap Pagination -->
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+    <!-- 처음 페이지로 이동 -->
+    {% if products.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?q={{ query }}&page=1" aria-label="First">
+          <span aria-hidden="true">&laquo;&laquo;</span>
+        </a>
+      </li>
+      <!-- 이전 페이지로 이동 -->
+      <li class="page-item">
+        <a class="page-link" href="?q={{ query }}&page={{ products.previous_page_number }}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+    {% endif %}
 
-                <span class="current">
-                    페이지 {{ products.number }} / {{ products.paginator.num_pages }}
-                </span>
+    <!-- 현재 페이지 번호 (옵션으로 숫자 페이지들을 추가할 수 있음) -->
+    <li class="page-item active" aria-current="page">
+      <span class="page-link">
+        {{ products.number }} / {{ products.paginator.num_pages }}
+      </span>
+    </li>
 
-                {% if products.has_next %}
-                    <a href="?q={{ query }}&page={{ products.next_page_number }}">다음</a>
-                    <a href="?q={{ query }}&page={{ products.paginator.num_pages }}">끝 &raquo;</a>
-                {% endif %}
-            {% endwith %}
-        </span>
-    </div>
+    <!-- 다음 페이지로 이동 -->
+    {% if products.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?q={{ query }}&page={{ products.next_page_number }}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+      <!-- 마지막 페이지로 이동 -->
+      <li class="page-item">
+        <a class="page-link" href="?q={{ query }}&page={{ products.paginator.num_pages }}" aria-label="Last">
+          <span aria-hidden="true">&raquo;&raquo;</span>
+        </a>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
 
 </body>
 </html>
