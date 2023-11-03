@@ -9,6 +9,25 @@
             window.location = url;
         }
     </script>
+        <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3개의 컬럼을 생성 */
+            gap: 10px; /* 그리드 사이의 간격 */
+            padding: 10px;
+        }
+        .grid-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        .grid-item img {
+            width: 100%;
+            max-width: 100px; /* 이미지의 최대 너비를 제한 */
+            height: auto; /* 이미지의 비율을 유지 */
+        }
+    </style>
+
 </head>
 <body>
     <!-- 검색 폼 추가 -->
@@ -17,27 +36,20 @@
         <button type="submit">검색</button>
     </form>
 
-    <!-- 제품 테이블 -->
-    <table border="1">
-        <tr>
-            <th>이미지</th>
-            <th>이름</th>
-            <th>가격</th>
-        </tr>
+    <!-- 제품 그리드 -->
+    <div class="grid-container">
         {% if products %}
             {% for product in products %}
-                <tr onclick="goToUrl('{{ product.url }}')" style="cursor:pointer;">
-                    <td><img src="{{ product.image_url }}" alt="{{ product.name }}" style="width:100px;height:100px;"></td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.price }}</td>
-                </tr>
+                <div class="grid-item" onclick="goToUrl('{{ product.url }}')" style="cursor:pointer;">
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                    <h3>{{ product.name }}</h3>
+                    <p>{{ product.price }}</p>
+                </div>
             {% endfor %}
         {% else %}
-            <tr>
-                <td colspan="3">검색 결과가 없습니다.</td>
-            </tr>
+            <div>검색 결과가 없습니다.</div>
         {% endif %}
-    </table>
+    </div>
 
     <!-- 페이지네이션 링크 -->
     <div>
