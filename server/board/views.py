@@ -11,7 +11,7 @@ def product_list(request):
         product_objects = Product.objects.all()
 
     # 페이지네이션 구현 부분
-    paginator = Paginator(product_objects, 9)
+    paginator = Paginator(product_objects, 16)
     page = request.GET.get('page')
     products = paginator.get_page(page)
 
