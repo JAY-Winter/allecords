@@ -1,10 +1,14 @@
 import csv
 import re
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
-from datetime import datetime, timedelta
 import time
+from datetime import datetime, timedelta
+
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
 
 
 def find_last_page_number(driver):
@@ -54,8 +58,19 @@ def collect_data_and_write_to_csv(driver, writer):
         writer.writerow([product_name, product_link, image_url, price])
 
 
-# 웹드라이버 설정
-driver = webdriver.Chrome()
+# 웹드라이버 headless 옵션 설정
+options = Options()
+options.add_argument("--headless")  # GUI 없이 실행
+options.add_argument("--no-sandbox")  # Sandbox 없이 실행
+options.add_argument("--disable-dev-shm-usage")  # /dev/shm 파티션 사용 비활성화
+options.add_argument("--disable-gpu")  # GPU 가속 비활성화
+options.add_argument("--window-size=1920,1080")  # 윈도우 사이즈 설정
+options.add_argument("--disable-infobars")  # Chrome의 정보 바 비활성화
+options.add_argument("--disable-extensions")  # 확장 프로그램 비활성화
+options.add_argument("--disable-popup-blocking")  # 팝업 차단 비활성화
+
+# ChromeDriverManager를 사용하여 ChromeDriver를 자동으로 설정합니다.
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 # CSV 파일 초기설정
 
