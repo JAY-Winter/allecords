@@ -1,3 +1,5 @@
+{% load humanize %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -69,7 +71,7 @@
                     <a href="{{ product.url }}" target="_blank" class="text-dark">
                         <h6 class="card-title">{{ product.name }}</h6>
                     </a>
-                    <p class="card-text">{{ product.price }}원</p>
+                    <p class="card-text">{{ product.price|intcomma }}원</p>
                 </div>
             </div>
         </div>
