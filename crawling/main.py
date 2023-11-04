@@ -3,7 +3,7 @@ import re
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
-
+from datetime import datetime, timedelta
 import time
 
 
@@ -58,9 +58,16 @@ def collect_data_and_write_to_csv(driver, writer):
 driver = webdriver.Chrome()
 
 # CSV 파일 초기설정
-csv_file = open('products_prices.csv', 'w', newline='', encoding='utf-8')
+
+# 다음 날 사용할 데이터 미리 저장
+today = datetime.now()
+one_day_later = today + timedelta(days=1)
+formatted_date = one_day_later.strftime('%Y_%m_%d')
+
+CSV_NAME = f'products_{formatted_date}.csv'
+csv_file = open(CSV_NAME, 'w', newline='', encoding='utf-8')
 csv_writer = csv.writer(csv_file)
-csv_writer.writerow(['상품이름', '가격'])  # 헤더 작성
+csv_writer.writerow(['name', 'url', 'image_url', 'price'])  # 헤더 작성
 
 try:
     # 최초 페이지 로드
@@ -72,7 +79,6 @@ try:
     total_pages = find_last_page_number(driver)
     current_page = 1  # 첫 페이지로 시작
 
-    # 페이지 순회 및 데이터 수집
     # 페이지 순회 및 데이터 수집
     while current_page <= total_pages:
         collect_data_and_write_to_csv(driver, csv_writer)
