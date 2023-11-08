@@ -57,32 +57,47 @@
     </div>
 </div>
 
+<!-- 검색 폼 아래에 정렬 드롭다운 메뉴 추가 -->
+<div class="container d-flex justify-content-end mb-4">
+    <form method="GET" action="" class="form-inline">
+        <input type="hidden" name="q" value="{{ request.GET.q }}">
+        <input type="hidden" name="page" value="{{ products.number }}">
+
+        <label for="sort" class="mr-2">정렬:</label>
+        <select name="sort" id="sort" class="custom-select" onchange="this.form.submit()">
+            <option value=""{% if not request.GET.sort %} selected{% endif %}>-</option>
+            <option value="price_asc"{% if request.GET.sort == 'price_asc' %} selected{% endif %}>가격 낮은순</option>
+            <option value="price_desc"{% if request.GET.sort == 'price_desc' %} selected{% endif %}>가격 높은순</option>
+        </select>
+    </form>
+</div>
+
 <!-- 제품 그리드 -->
 <div class="container">
     <div class="row">
         {% if products %}
-        {% for product in products %}
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
-            <!-- bg-light 클래스를 카드에 추가하여 배경색 적용 -->
-            <div class="card h-100 bg-light">
-                <!-- 이미지를 클릭하면 product.url로 이동 -->
-                <a href="{{ product.url }}" target="_blank">
-                    <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}"
-                         style="object-fit: contain; max-height: 150px;">
-                </a>
-                <!-- 카드 내용 -->
-                <div class="card-body">
-                    <!-- 제목을 클릭하면 product.url로 이동 -->
-                    <a href="{{ product.url }}" target="_blank" class="text-dark">
-                        <h6 class="card-title">{{ product.name }}</h6>
-                    </a>
-                    <p class="card-text">{{ product.price|intcomma }}원</p>
+            {% for product in products %}
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+                    <!-- bg-light 클래스를 카드에 추가하여 배경색 적용 -->
+                    <div class="card h-100 bg-light">
+                        <!-- 이미지를 클릭하면 product.url로 이동 -->
+                        <a href="{{ product.url }}" target="_blank">
+                            <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}"
+                                 style="object-fit: contain; max-height: 150px;">
+                        </a>
+                        <!-- 카드 내용 -->
+                        <div class="card-body">
+                            <!-- 제목을 클릭하면 product.url로 이동 -->
+                            <a href="{{ product.url }}" target="_blank" class="text-dark">
+                                <h6 class="card-title">{{ product.name }}</h6>
+                            </a>
+                            <p class="card-text">{{ product.price|intcomma }}원</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        {% endfor %}
+            {% endfor %}
         {% else %}
-        <p>검색 결과가 없습니다.</p>
+            <p>검색 결과가 없습니다.</p>
         {% endif %}
     </div>
 </div>
@@ -92,44 +107,50 @@
 <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center">
         {% with request.GET.q as query %}
-        <!-- 처음 페이지로 이동 -->
-        {% if products.has_previous %}
-        <li class="page-item">
-            <a class="page-link" href="?q={{ query|urlencode }}&page=1" aria-label="First">
-                <span aria-hidden="true">&laquo;&laquo;</span>
-            </a>
-        </li>
-        <!-- 이전 페이지로 이동 -->
-        <li class="page-item">
-            <a class="page-link" href="?q={{ query|urlencode }}&page={{ products.previous_page_number }}"
-               aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-            </a>
-        </li>
-        {% endif %}
+            {% with request.GET.sort as sort %}
+                <!-- 처음 페이지로 이동 -->
+                {% if products.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?q={{ query|urlencode }}&sort={{ sort }}&page=1" aria-label="First">
+                            <span aria-hidden="true">&laquo;&laquo;</span>
+                        </a>
+                    </li>
+                    <!-- 이전 페이지로 이동 -->
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="?q={{ query|urlencode }}&sort={{ sort }}&page={{ products.previous_page_number }}"
+                           aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
 
-        <!-- 현재 페이지 번호 (옵션으로 숫자 페이지들을 추가할 수 있음) -->
-        <li class="page-item active" aria-current="page">
-        <span class="page-link">
-          {{ products.number }} / {{ products.paginator.num_pages }}
-        </span>
-        </li>
+                <!-- 현재 페이지 번호 (옵션으로 숫자 페이지들을 추가할 수 있음) -->
+                <li class="page-item active" aria-current="page">
+                <span class="page-link">
+                  {{ products.number }} / {{ products.paginator.num_pages }}
+                </span>
+                </li>
 
-        <!-- 다음 페이지로 이동 -->
-        {% if products.has_next %}
-        <li class="page-item">
-            <a class="page-link" href="?q={{ query|urlencode }}&page={{ products.next_page_number }}" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-            </a>
-        </li>
-        <!-- 마지막 페이지로 이동 -->
-        <li class="page-item">
-            <a class="page-link" href="?q={{ query|urlencode }}&page={{ products.paginator.num_pages }}"
-               aria-label="Last">
-                <span aria-hidden="true">&raquo;&raquo;</span>
-            </a>
-        </li>
-        {% endif %}
+                <!-- 다음 페이지로 이동 -->
+                {% if products.has_next %}
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="?q={{ query|urlencode }}&sort={{ sort }}&page={{ products.next_page_number }}"
+                           aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    <!-- 마지막 페이지로 이동 -->
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="?q={{ query|urlencode }}&sort={{ sort }}&page={{ products.paginator.num_pages }}"
+                           aria-label="Last">
+                            <span aria-hidden="true">&raquo;&raquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
+            {% endwith %}
         {% endwith %}
     </ul>
 </nav>
