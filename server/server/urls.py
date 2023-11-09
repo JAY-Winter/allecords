@@ -17,9 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from board.views import product_list
+from board.views import product_list, recommend_melon_product_list
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('products/', product_list, name='product_list'),
+    path('recommend_melon_product_list/', recommend_melon_product_list, name='recommend_melon_product_list'),
 ]
