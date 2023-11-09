@@ -1,3 +1,5 @@
+from melon import *
+
 import django.http
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render
