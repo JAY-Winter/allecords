@@ -38,6 +38,27 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
+<div class="container my-4">
+    <div class="row align-items-center">
+        <!-- 로고 이미지 (모바일에서는 4/12, 중형 장치에서는 3/12, 대형 장치에서는 2/12 비율로 설정) -->
+        <div class="col-4 col-md-3 col-lg-2">
+            <a href="/products">
+                <img src="/static/images/logo.png" alt="Home" class="img-fluid">
+            </a>
+        </div>
+
+        <!-- 검색 폼 (모바일에서는 8/12, 중형 장치에서는 9/12, 대형 장치에서는 10/12 비율로 설정) -->
+        <div class="col-8 col-md-9 col-lg-10">
+            <form method="GET" action="" class="input-group">
+                <input type="text" name="q" placeholder="제품 검색..." class="form-control">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-secondary">검색</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 <div class="container">
     <div class="row">

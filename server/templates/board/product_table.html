@@ -29,8 +29,6 @@
             object-fit: cover;
             margin-top: 15px;
         }
-
-
     </style>
     <!-- 부트스트랩 CSS 추가 -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -56,6 +54,15 @@
             </form>
         </div>
     </div>
+</div>
+
+<!-- 멜론 탑 1000 추천 상품 -->
+<div class="container text-center my-3">
+    <a href="{% url 'recommend_melon_product_list' %}" class="text-decoration-none">
+        <div class="p-2 bg-primary text-white rounded">
+            멜론 추천 상품 목록 보기
+        </div>
+    </a>
 </div>
 
 <!-- 검색 폼 아래에 정렬 드롭다운 메뉴 추가 -->
@@ -90,7 +97,8 @@
                         <div class="card-body">
                             <!-- 제목을 클릭하면 product.url로 이동 -->
                             <a href="{{ product.url }}" target="_blank" class="text-dark">
-                                <h6 class="card-title">{{ product.name }}</h6>
+                                <h6 class="card-title">{{ product.title }}</h6>
+                                <h7 class="card-title">{{ product.artist }}</h7>
                             </a>
                             <p class="card-text">{{ product.price|intcomma }}원</p>
                         </div>
@@ -102,7 +110,6 @@
         {% endif %}
     </div>
 </div>
-
 
 <!-- Bootstrap Pagination -->
 <nav aria-label="Page navigation example">
