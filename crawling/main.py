@@ -28,6 +28,14 @@ def find_last_page_number(driver):
         return -1
 
 
+# 문자열 파싱을 위한 함수
+def parse_artist_name(artist_name):
+    artist_name = re.sub(r'\s+(노래|연주|지휘|작곡|외).*$', '', artist_name)
+    artist_name = re.sub(r'\(.*?\)', '', artist_name)
+    artist_name = re.sub(r'[^a-zA-Z0-9가-힣\s]', '', artist_name)
+    return artist_name.strip()
+
+
 def collect_data_and_write_to_csv(driver, writer):
     product_containers = driver.find_elements(By.CSS_SELECTOR, "form#Myform td[valign='top'][width='25%']")
 
@@ -47,15 +55,24 @@ def collect_data_and_write_to_csv(driver, writer):
         except NoSuchElementException:
             continue  # 상품명과 링크가 없는 경우 해당 상품은 건너뜁니다.
 
-        # 가격 추출
         try:
+            # 가격 추출
             price_element = container.find_element(By.CSS_SELECTOR, "span.p1_n")
             price = int(re.sub(r'[^\d]', '', price_element.text.split('(')[0].strip()))
         except NoSuchElementException:
             price = "가격 정보 없음"  # 가격 정보가 없는 경우
 
+        try:
+            # 아티스트명 추출 및 파싱
+            artist_element = container.find_element(By.CSS_SELECTOR, "span.gw")
+            artist_name = artist_element.text.split('|')[0].strip()
+            # 파싱된 아티스트 이름을 얻습니다.
+            artist_name = parse_artist_name(artist_name)
+        except NoSuchElementException:
+            artist_name = "아티스트 정보 없음"
+
         # 데이터 작성
-        writer.writerow([product_name, product_link, image_url, price])
+        writer.writerow([product_name, artist_name, product_link, image_url, price])
 
 
 # 웹드라이버 headless 옵션 설정
@@ -82,7 +99,7 @@ formatted_date = one_day_later.strftime('%Y_%m_%d')
 CSV_NAME = f'products_{formatted_date}.csv'
 csv_file = open(CSV_NAME, 'w', newline='', encoding='utf-8')
 csv_writer = csv.writer(csv_file)
-csv_writer.writerow(['name', 'url', 'image_url', 'price'])  # 헤더 작성
+csv_writer.writerow(['title', 'artist', 'url', 'image_url', 'price'])  # 헤더 작성
 
 try:
     # 최초 페이지 로드
@@ -97,7 +114,7 @@ try:
     # 페이지 순회 및 데이터 수집
     while current_page <= total_pages:
         collect_data_and_write_to_csv(driver, csv_writer)
-
+        print('진행 중 : ', current_page, ' | ', total_pages)
         # 다음 페이지로 이동
         current_page += 1
         if current_page <= total_pages:
